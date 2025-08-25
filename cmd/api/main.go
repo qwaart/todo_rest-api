@@ -49,7 +49,8 @@ func main() {
 	r.POST("/task", taskHandler.CreateTask)
 	r.GET("/task/:id", taskHandler.GetTaskByID)
 	r.DELETE("/task/:id", taskHandler.DeleteTaskByID)
-	r.PATCH("/task/:id/completed", taskHandler.UpdateTaskByID)
+	r.PATCH("/task/:id/completed", taskHandler.UpdateTaskCompletedByID)
+	r.PATCH("/task/:id/uncompleted", taskHandler.UpdateTaskUncompletedByID)
 	r.Run(":8080")
 }
 

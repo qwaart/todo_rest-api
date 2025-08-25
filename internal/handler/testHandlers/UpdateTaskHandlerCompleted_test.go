@@ -23,7 +23,7 @@ func setupRouter(t *testing.T) *gin.Engine {
 	r := gin.Default()
 	taskHandler := handler.NewTaskHandler(storage)
 	r.POST("/task", taskHandler.CreateTask)
-	r.PATCH("/task/:id/completed", taskHandler.UpdateTaskByID)
+	r.PATCH("/task/:id/completed", taskHandler.UpdateTaskCompletedByID)
 
 	return r
 }
