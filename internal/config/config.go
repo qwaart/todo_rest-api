@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Env 		string 		`yaml:"env" env:"ENV" env-default:"local" env-required:"true"`
 	StoragePath string 		`yaml:"storage_path" env-required:"true"`
+	AuthToken 	string		`yaml:"auth_token"`
 	HTTPServer  HTTPServer	`yaml:"http_server"`
 }
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	auth "rest_api/internal/authMiddleware"
 	"rest_api/internal/config"
 	"rest_api/internal/lib/logger/slog"
 	"rest_api/internal/db/sqlite"
@@ -46,8 +47,11 @@ func main() {
 
 	// init router: gin
 	r := gin.Default()
+
+	r.Use(auth.AuthMiddleware(cfg.AuthToken))
+
 	r.POST("/task", taskHandler.CreateTask)
-	r.GET("/task/:id", taskHandler.GetTaskByID)
+	r.GET("/task/:id", taskHandler.GetTaskByID) // can use without token
 	r.DELETE("/task/:id", taskHandler.DeleteTaskByID)
 	r.PATCH("/task/:id/completed", taskHandler.UpdateTaskCompletedByID)
 	r.PATCH("/task/:id/uncompleted", taskHandler.UpdateTaskUncompletedByID)
