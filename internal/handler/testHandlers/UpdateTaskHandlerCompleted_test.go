@@ -1,4 +1,4 @@
-package handler_test_UpdateTask
+package test_Handler
 
 import (
 	"bytes"
@@ -7,29 +7,11 @@ import (
 	"net/http/httptest"
 	"testing"
 	"strconv"
-
-	"rest_api/internal/db/sqlite"
-	"rest_api/internal/handler"
-
-	"github.com/gin-gonic/gin"
 )
 
-func setupRouter(t *testing.T) *gin.Engine {
-	storage, err := sqlite.New(":memory:")
-	if err != nil {
-		t.Fatalf("failed to init storage: %v", err)
-	}
+func TestCompletedUpdateTaskByID(t *testing.T) {
 
-	r := gin.Default()
-	taskHandler := handler.NewTaskHandler(storage)
-	r.POST("/task", taskHandler.CreateTask)
-	r.PATCH("/task/:id/completed", taskHandler.UpdateTaskCompletedByID)
-
-	return r
-}
-
-func TestUpdateTaskByID(t *testing.T) {
-	r := setupRouter(t)
+	r := SetupRouter(t)
 
 	//Add task
 	taskJSON := `{"title": "Test task"}`

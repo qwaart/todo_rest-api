@@ -1,4 +1,4 @@
-package deleteTaskHandler_test
+package test_Handler
 
 import (
 	"bytes"
@@ -8,27 +8,11 @@ import (
 	"testing"
 	"strconv"
 
-	"rest_api/internal/db/sqlite"
-	"rest_api/internal/handler"
-
-	"github.com/gin-gonic/gin"
+	//"rest_api/internal/db/sqlite"
 )
 
-func setupRouter(t *testing.T) *gin.Engine {
-	storage, err := sqlite.New(":memory:")
-	if err != nil {
-		t.Fatalf("failed to init storage: %v", err)
-	}
-
-	r := gin.Default()
-	taskHandler := handler.NewTaskHandler(storage)
-	r.POST("/task", taskHandler.CreateTask)
-	r.DELETE("task/:id", taskHandler.DeleteTaskByID)
-	return r
-}
-
 func TestDeleteTaskByID(t *testing.T) {
-	r := setupRouter(t)
+	r := SetupRouter(t)
 
 	//Add task to be delete later
 	taskJSON := `{"title":"Test task"}`

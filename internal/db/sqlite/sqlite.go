@@ -26,8 +26,7 @@ func New(storagePath string) (*Storage, error) {
 		CREATE TABLE IF NOT EXISTS todo(
 		id INTEGER PRIMARY KEY,
 		task TEXT NOT NULL,
-		completed BOOLEAN DEFAULT FALSE,
-		private BOOLEAN DEFAULT FALSE);
+		completed BOOLEAN DEFAULT FALSE);
 	CREATE INDEX IF NOT EXISTS idx_task ON todo(task);
 	`)
 	if err != nil {
@@ -43,16 +42,16 @@ func New(storagePath string) (*Storage, error) {
 }
 
 // POST
-func (s *Storage) AddTask(task string, private bool) (int64, error) {
+func (s *Storage) AddTask(task string) (int64, error) {
 	const op = "storage.sqlite.AddTask"
 
-	stmt, err := s.db.Prepare("INSERT INTO todo(task, private) VALUES(?, ?)")
+	stmt, err := s.db.Prepare("INSERT INTO todo(task) VALUES(?)")
 	if err != nil {
 		return 0, fmt.Errorf("%s: Prepare: %w", op, err)
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(task, private)
+	result, err := stmt.Exec(task)
 	if err != nil {
 		return 0, fmt.Errorf("%s: Exec: %w", op, err)
 	}
@@ -65,21 +64,20 @@ func (s *Storage) AddTask(task string, private bool) (int64, error) {
 	return id, nil
 }
  // GET
-func (s *Storage) GetTaskByID(id int64) (string, bool, bool, error) {
+func (s *Storage) GetTaskByID(id int64) (string, bool, error) {
 	const op = "storage.sqlite.GetTaskByID"
 	var task string
 	var completed bool
-	var private bool
 
-	err := s.db.QueryRow("SELECT task, completed, private FROM todo WHERE id = ?", id).Scan(&task, &completed, &private)
+	err := s.db.QueryRow("SELECT task, completed FROM todo WHERE id = ?", id).Scan(&task, &completed)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", false, false, fmt.Errorf("No task with id=%d", id)
+			return "", false, fmt.Errorf("No task with id=%d", id)
 		}
-		return "", false, false, fmt.Errorf("%s: QuerryRow: %w", op, err)
+		return "", false, fmt.Errorf("%s: QuerryRow: %w", op, err)
 	}
 
-	return task, completed, private, nil
+	return task, completed, nil
 }
 
  // DELETE
@@ -119,19 +117,18 @@ func (s *Storage) MarkTaskFalse(id int64) error {
 
 
  //need for other handlers
-func (s *Storage) GetTaskFullByID(id int64) (string, bool, bool, error) {
+func (s *Storage) GetTaskFullByID(id int64) (string, bool, error) {
 	const op = "storage.sqlite.GetTaskFullByID"
 	var task string
 	var completed bool
-	var private bool
 
- 	err := s.db.QueryRow("SELECT task, completed, private FROM todo where id = ?", id).Scan(&task, &completed, &private)
+ 	err := s.db.QueryRow("SELECT task, completed FROM todo where id = ?", id).Scan(&task, &completed)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return "", false, false, fmt.Errorf("no task with id=%d", id)
+			return "", false, fmt.Errorf("no task with id=%d", id)
 		}
-		return "", false, false, fmt.Errorf("%s: QuerryRow: %w", op, err)
+		return "", false, fmt.Errorf("%s: QuerryRow: %w", op, err)
 	}
 
-	return task, completed, private, nil
+	return task, completed, nil
 }

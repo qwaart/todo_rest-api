@@ -1,4 +1,4 @@
-package handler_test_GetTaskByID
+package test_Handler
 
 import (
 	"bytes"
@@ -8,28 +8,12 @@ import (
 	"testing"
 	"strconv"
 
-	"rest_api/internal/db/sqlite"
-	"rest_api/internal/handler"
+	//"rest_api/internal/db/sqlite"
 
-	"github.com/gin-gonic/gin"
 )
 
-func setupRouter(t *testing.T) *gin.Engine {
-	storage, err := sqlite.New(":memory:")
-	if err != nil {
-		t.Fatalf("failed to init strage: %v", err)
-	}
-	
-	r := gin.Default()
-	taskHandler := handler.NewTaskHandler(storage)
-	r.POST("/task", taskHandler.CreateTask)
-	r.GET("/task/:id", taskHandler.GetTaskByID)
-
-	return r
-}
-
 func TestGetTaskByID(t *testing.T) {
-	r := setupRouter(t)
+	r := SetupRouter(t)
 
 	// Add task
 	taskJSON := `{"title": "Test task"}`
