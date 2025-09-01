@@ -8,13 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	auth "rest_api/internal/authMiddleware"
+	sl "rest_api/internal/lib/logger/slog"
 	"rest_api/internal/config"
-	"rest_api/internal/lib/logger/slog"
 	"rest_api/internal/db/sqlite"
 	"rest_api/internal/handler"
 )
-
-var storage *sqlite.Storage
 
 const (
 	envlocal 	= "local"
@@ -33,10 +31,8 @@ func main() {
 	log.Debug("Debug message are enabled")
 
 	//initialization storage(sqlite)
-	var _ = sqlite.New
-
 	var err error
-	storage, err = sqlite.New(cfg.StoragePath)
+	storage, err := sqlite.New(cfg.StoragePath)
 	if err != nil {
 	    log.Error("failed to init storage", sl.Err(err))
 	    os.Exit(1)
@@ -53,12 +49,12 @@ func main() {
 	r.POST("/task", taskHandler.CreateTask)
 	r.GET("/task/:id", taskHandler.GetTaskByID) // can use without token
 	r.DELETE("/task/:id", taskHandler.DeleteTaskByID)
-	r.PATCH("/task/:id/completed", taskHandler.UpdateTaskCompletedByID)
-	r.PATCH("/task/:id/uncompleted", taskHandler.UpdateTaskUncompletedByID)
+	r.PATCH("/task/:id/completed", taskHandler.CompletedTask)
+	r.PATCH("/task/:id/uncompleted", taskHandler.UncompletedTask)
 	r.Run(":8080")
 }
 
-// For logs
+//  setupLog configures the logger depending on the environment (local/dev/prod).
 func setupLog(env string) *slog.Logger {
 	var log *slog.Logger
 
