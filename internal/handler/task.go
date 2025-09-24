@@ -11,7 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-// // The TaskHandler is responsible for processing HTTP requests related to tasks (creating, receiving, updating, deleting).
+
+// The TaskHandler is responsible for processing HTTP requests related to tasks (creating, receiving, updating, deleting).
 type TaskHandler struct {
 	storage *sqlite.Storage
 }
