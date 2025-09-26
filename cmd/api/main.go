@@ -57,7 +57,7 @@ func main() {
     }
 }
 	// init services & handlers
-	taskHandler := handler.NewTaskHandler(storage)
+	taskHandler := handler.NewTaskHandler(storage, log)
 	authService := auth.NewService(authStorage)
 	authHandler := handler.NewAuthorization(authService, log)
 
