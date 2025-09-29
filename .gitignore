@@ -3,3 +3,5 @@ run.bat
 storage/storage.db
 rest.sublime-project
 rest.sublime-workspace
+internal/handler/test_handlers
+internal/handler/testHandlers
